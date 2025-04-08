@@ -1,0 +1,239 @@
+CREATE TABLE departamento(
+    cod_dep int,
+    nome varchar(50),
+    endereco varchar(50)
+);
+-- ------------------------------------------------------------
+CREATE TABLE dependente
+(matr int, nome varchar(50), endereco varchar(50));
+
+-- ------------------------------------------------------------
+CREATE TABLE desconto
+(cod_desc int, nome varchar(50), tipo varchar(10), valor numeric);
+
+-- ------------------------------------------------------------
+CREATE TABLE divisao
+(cod_divisao int, nome varchar(50), endereco varchar(50), cod_dep int);
+
+
+-- ------------------------------------------------------------
+CREATE TABLE emp_desc
+(cod_desc int, matr int);
+
+
+-- ------------------------------------------------------------
+CREATE TABLE emp_venc
+(cod_venc int, matr int);
+
+
+-- ------------------------------------------------------------
+CREATE TABLE empregado
+(matr int, nome varchar(50), endereco varchar(50), data_lotacao timestamp, lotacao int,
+gerencia_cod_dep int, lotacao_div int, gerencia_div int);
+
+-- ------------------------------------------------------------
+CREATE TABLE vencimento
+(cod_venc int, nome varchar(50), tipo varchar(10), valor numeric);
+
+INSERT INTO departamento
+("cod_dep", "nome", "endereco")
+VALUES
+(1, 'Contabilidade', 'R. X'),
+(2, 'TI', 'R. Y'),
+(3, 'Engenharia', 'R. Y');
+
+INSERT INTO dependente
+(matr, nome, endereco)
+VALUES
+(9999, 'Francisco Jose', 'R. Z'),
+(88, 'Maria da Silva', 'R. T'),
+(55, 'Virgulino da Silva', 'R. 31');
+
+INSERT INTO desconto
+(cod_desc, nome, tipo, valor)
+VALUES
+(91, 'IR', 'V', 400.00),
+(92, 'Plano de saude', 'v', 300.00),
+(93, NULL, NULL, NULL);
+
+INSERT INTO divisao
+(cod_divisao, nome, endereco, cod_dep)
+VALUES
+(11, 'Ativo', 'R. X', 1),
+(12, 'Passivo', 'R. X', 1),
+(21, 'Desenvoilvimento de Projetos', 'R. Y', 2),
+(22, 'Analise de Sistemas', 'R. Y', 2),
+(23, 'Programacao', 'R. W', 2),
+(31, 'Concreto', 'R Y', 3),
+(32, 'Calculo Estrutural', 'R. Y', 3);
+
+INSERT INTO emp_desc
+(cod_desc, matr)
+VALUES
+(91, 3),
+(91, 27),
+(91, 9999),
+(92, 27),
+(92, 71),
+(92, 88),
+(92, 9999);
+
+INSERT INTO emp_venc
+(cod_venc, matr)
+VALUES
+(1, 27),
+(1, 88),
+(1, 135),
+(1, 254),
+(1, 431),
+(2, 1),
+(2, 5),
+(2, 7),
+(2, 13),
+(2, 33),
+(2, 9999),
+(3, 3),
+(3, 55),
+(3, 71),
+(3, 222),
+(3, 223),
+(4, 25),
+(4, 476),
+(5, 371),
+(6, 3),
+(6, 27),
+(6, 9999),
+(7, 5),
+(7, 33),
+(7, 55),
+(7, 71),
+(7, 88),
+(7, 254),
+(7, 476),
+(8, 25),
+(8, 91),
+(9, 1),
+(9, 27),
+(9, 91),
+(9, 135),
+(9, 371),
+(9, 9999),
+(10, 371),
+(10, 9999),
+(11, 91),
+(12, 3),
+(12, 27),
+(12, 254),
+(12, 9999),
+(13, 3),
+(13, 5),
+(13, 7),
+(13, 25),
+(13, 33),
+(13, 88),
+(13, 135);
+
+INSERT INTO empregado
+(matr, nome, endereco, data_lotacao, lotacao, gerencia_cod_dep, lotacao_div, gerencia_div)
+VALUES
+(9999, 'Jose Sampaio', 'R Z', '2006-06-06 00:00:00', 1, 1, 12, NULL),
+(33, 'Jose Maria', 'R 21', '2006-03-01 00:00:00', 1, NULL, 11, 11),
+(1, 'Maria Jose', 'R. 52', '2003-03-01 00:00:00', 1, NULL, 11, NULL),
+(7, 'Yasmim', 'R. 13', '2010-07-02 00:00:00', 1, NULL, 11, NULL),
+(5, 'Rebeca', 'R. 1', '2011-04-01 00:00:00', 1, NULL, 12, 12),
+(13, 'Sofia', 'R. 28', '2010-09-09 00:00:00', 1, NULL, 12, NULL),
+(27, 'Andre', 'R. Z', '2005-05-01 00:00:00', 2, 2, 22, NULL),
+(88, 'Yami', 'R. T', '2014-02-01 00:00:00', 2, NULL, 21, 21),
+(431, 'Joao da Silva', 'R. Y', '2011-07-03 00:00:00', 2, NULL, 21, NULL),
+(135, 'Ricardo Reis', 'R. 33', '2009-08-01 00:00:00', 2, NULL, 21, NULL),
+(254, 'Barbara', 'R. Z', '2008-01-03 00:00:00', 2, NULL, 22, 22),
+(371, 'Ines', 'R. Y', '2005-01-01 00:00:00', 2, NULL, 22, NULL),
+(476, 'Flor', 'r. Z', '2015-10-28 00:00:00', 2, NULL, 23, 23),
+(25, 'Lina', 'R. 67', '2014-09-01 00:00:00', 2, NULL, 23, NULL),
+(3, 'Jose da Silva', 'R. 8', '2011-01-02 00:00:00', 3, 3, 31, NULL),
+(71, 'Silverio dos Reis', 'r. C', '2009-01-05 00:00:00', 3, NULL, 31, 31),
+(91, 'Reis da Silva', 'R. Z', '2011-11-05 00:00:00', 3, NULL, 31, NULL),
+(55, 'Lucas', 'R 31', '2013-07-01 00:00:00', 3, NULL, 32, 32),
+(222, 'Marina', 'R 31', '2015-01-07 00:00:00', 3, NULL, 32, NULL),
+(223, 'Naldo', 'R 31', '2015-01-08 00:00:00', 3, NULL, 32, NULL),
+(725, 'Angelo', 'R. X', '2001-03-01 00:00:00', 2, NULL, 21, NULL);
+
+INSERT INTO vencimento
+(cod_venc, nome, tipo, valor)
+VALUES
+(1, 'salario base Analista de Sistemas', 'V', 5000.00),
+(2, 'Salario base Contador', 'V', 3000.00),
+(3, 'Salario Base Engenheiro', 'V', 4500.00),
+(4, 'Salario Base Projetista Software', 'V', 5000.00),
+(5, 'Salario Base Programador de Sistemas', 'V', 3000.00),
+(6, 'Gratificacao Chefia Departamento', 'V', 3750.00),
+(7, 'Gratificacao Chefia Divisao', 'V', 2200.00),
+(8, 'Salario Trabalhador Costrucao Civil', 'V', 800.00),
+(9, 'Auxilio Salario Familia', 'V', 300.00),
+(10, 'Gratificacao Tempo de servico', 'V', 350.00),
+(11, 'Insalubridade', 'V', 800.00),
+(12, 'Gratificacao por titulacao - Doutorado', 'V', 2000.00),
+(13, 'Gratificacao por Titularidade - Mestrado', 'V', 800.00);
+
+-- Utilizo as CTEs para organizar a query em etapas e facilitar a leitura.
+-- Em primeiro lugar, calculo o salário total de cada empregado. 
+
+WITH empregado_com_salario AS (
+    /*
+      Consulto a tabela que liga empregados aos vencimentos
+      e somo os valores dos vencimentos (que passa a ser o salário) de cada empregado.
+      Uso o LEFT JOIN para garantir que quem não tem vencimento também apareça no resultado.
+    */
+    SELECT 
+        ev.matr,
+        SUM(v.valor) AS salario_total
+    FROM emp_venc ev
+    LEFT JOIN vencimento v 
+    ON v.cod_venc = ev.cod_venc
+    GROUP BY ev.matr
+),
+
+-- Em segundo lugar, junto o salário com o departamento de cada empregado.
+empregado_com_salario_e_departamento AS (
+    /*
+      Junto a tabela de empregados com os salários calculados em empregado_com_salario.
+      Uso o LEFT JOIN para garantir que todos os empregados apareçam, mesmo os sem salário.
+    */
+
+    SELECT 
+        e.matr,
+        e.lotacao,
+        ecs.salario_total
+    FROM empregado e
+    LEFT JOIN empregado_com_salario ecs
+    ON ecs.matr = e.matr
+)
+
+-- Por fim, retorno a tabela pedida na questão. 
+/*
+
+Para calcular o salário médio e o salário mínimo por departamento, precisei tomar um cuidado especial. 
+Percebi que existe um empregado cadastrado na tabela empregado que não têm nenhum vencimento 
+na tabela de vencimento. Se eu usasse COALESCE(salario_total, 0) direto, o salário desse empregado seria
+igual a zero, sendo que na verdade o vencimento que está faltando, não que o salário 
+seja zero realmente.
+Isso atrapalha no cálculo da média e do salário mínimo, porque esses zeros "falsos" puxam os valores 
+pra baixo. Então, pra resolver, eu usei um CASE no cálculo da média e do mínimo, dizendo que só quero 
+considerar os salários maiores que zero. Se for zero ou nulo, eu deixo como NULL, então o AVG e o MIN 
+ignoram esse valor. 
+Para o MAX não precisei do filtro, porque valores zerados não alteram o resultado.
+Já pra contar quantos empregados tem em cada departamento, eu deixei sem o filtro. Mesmo quem não 
+tem salário registrado precisa aparecer na contagem, senão o número de empregados por departamento 
+ficaria errado.
+*/
+SELECT 
+    d.nome AS nome_departamento,
+    COUNT(*) AS qtd_empregados, -- quantidade de empregados em cada departamento
+    ROUND(AVG(CASE WHEN ecs.salario_total > 0 THEN ecs.salario_total ELSE NULL END), 2) AS salario_medio, -- média arredondada dos salários por departamento desconsiderando salários zerados ou nulos
+    ROUND(MIN(CASE WHEN ecs.salario_total > 0 THEN ecs.salario_total ELSE NULL END), 2) AS salario_minimo, -- menor salário arredondado por departamento desconsiderando salários zerados ou nulos
+    ROUND(MAX(COALESCE(ecs.salario_total, 0)), 2) AS salario_maximo -- maior salário arredondado por departamento
+FROM empregado_com_salario_e_departamento ecs
+JOIN departamento d 
+ON d.cod_dep = ecs.lotacao -- junto com a tabela de departamentos para retornar o nome do departamento
+GROUP BY d.nome
+ORDER BY salario_medio DESC; -- ordeno o resultado pela maior média salarial
