@@ -1,0 +1,146 @@
+-- Primeiro, crio as tabelas necessárias para organizar os dados da consulta.
+
+/*
+  Crio a tabela de escolas com um identificador primário e o nome da escola.
+*/
+CREATE TABLE schools (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+/*
+  Crio a tabela de cursos, relacionando cada curso com uma escola.
+  Também defino o preço de cada curso.
+*/
+CREATE TABLE courses (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    price NUMERIC NOT NULL,
+    school_id TEXT REFERENCES schools(id)
+);
+
+/*
+  Crio a tabela de estudantes, relacionando cada aluno ao curso que está matriculado.
+  Uso SERIAL para gerar um identificador automático.
+*/
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    enrolled_at DATE NOT NULL,
+    course_id TEXT REFERENCES courses(id)
+);
+
+-- Em seguida, insiro alguns dados fictícios para popular as tabelas.
+
+/*
+  Insiro escolas com seus respectivos identificadores.
+*/
+INSERT INTO schools (id, name) VALUES
+('s1', 'Escola de Dados'),
+('s2', 'Instituto de Tecnologia'),
+('s3', 'Faculdade de Engenharia');
+
+/*
+  Insiro os cursos, associando cada um a uma escola e definindo o preço.
+*/
+INSERT INTO courses (id, name, price, school_id) VALUES
+('c1', 'Data Science Basics', 1000, 's1'),
+('c2', 'Data Engineering', 1200, 's1'),
+('c3', 'Web Development', 800, 's2'),
+('c4', 'Data Analysis', 1100, 's2'),
+('c5', 'Engenharia de Software', 900, 's3');
+
+/*
+  Insiro os estudantes, com a data de matrícula e o curso ao qual estão associados.
+*/
+INSERT INTO students (name, enrolled_at, course_id) VALUES
+('Ana', '2024-03-01', 'c1'),
+('Bruno', '2024-03-01', 'c1'),
+('Carla', '2024-03-02', 'c2'),
+('Daniel', '2024-03-02', 'c3'),
+('Eduardo', '2024-03-03', 'c4'),
+('Fernanda', '2024-03-03', 'c2'),
+('Gabriel', '2024-03-04', 'c1'),
+('Helena', '2024-03-04', 'c5'),
+('Igor', '2024-03-05', 'c2'),
+('Juliana', '2024-03-05', 'c1'),
+('Karla', '2024-03-06', 'c4'),
+('Lucas', '2024-03-06', 'c1'),
+('Marina', '2024-03-07', 'c2'),
+('Nicolas', '2024-03-07', 'c2'),
+('Olívia', '2024-03-07', 'c3'),
+('Pedro', '2024-03-08', 'c1');
+
+-- Agora passo para a consulta.
+
+/*
+  Consulto os cursos que começam com "Data" e retorno a quantidade de alunos e o valor total das matrículas por escola e por data.
+  Uso o COUNT para saber quantos alunos se matricularam por dia e o SUM para calcular o total pago.
+*/
+SELECT
+    s.name AS nome_escola,
+    st.enrolled_at::date AS data_matricula,
+    COUNT(st.id) AS quantidade_alunos,
+    SUM(c.price) AS valor_total_matriculas
+FROM students st
+JOIN courses c 
+ON st.course_id = c.id
+JOIN schools s 
+ON c.school_id = s.id
+WHERE c.name ILIKE 'Data%' -- seleciono apenas os cursos cujo nome começa com "Data"
+GROUP BY nome_escola, data_matricula
+ORDER BY data_matricula DESC;
+
+-- Consulta final
+/*
+  Primeiro, crio uma CTE para organizar a base com a quantidade de alunos por escola e por dia.
+  Essa estrutura facilita a leitura e reaproveitamento na parte final.
+*/
+WITH dados_base AS (
+    SELECT
+        s.name AS escola,
+        st.enrolled_at::date AS dia_matricula,
+        COUNT(st.id) AS quantidade_alunos
+    FROM students st
+    JOIN courses c ON st.course_id = c.id
+    JOIN schools s ON c.school_id = s.id
+    WHERE c.name ILIKE 'Data%' -- seleciono apenas os cursos cujo nome começa com "Data"
+    GROUP BY s.name, dia_matricula
+)
+
+-- Por fim, retorno a tabela pedida na questão.
+/*
+  Calculo a soma acumulada e as médias móveis (de 7 e 30 dias) de alunos matriculados por escola.
+  Uso a cláusula WINDOW com PARTITION BY para calcular esses valores separadamente para cada escola.
+  A ordenação por data garante que o cálculo seja feito na ordem correta.
+*/
+SELECT
+    escola,
+    dia_matricula,
+    quantidade_alunos,
+
+    -- Soma acumulada de alunos por escola ao longo do tempo
+    SUM(quantidade_alunos) OVER (
+        PARTITION BY escola
+        ORDER BY dia_matricula
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS soma_acumulada,
+
+    -- Média móvel dos últimos 7 dias por escola
+    AVG(quantidade_alunos) OVER (
+        PARTITION BY escola
+        ORDER BY dia_matricula
+        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+    ) AS media_movel_7_dias,
+
+    -- Média móvel dos últimos 30 dias por escola
+    AVG(quantidade_alunos) OVER (
+        PARTITION BY escola
+        ORDER BY dia_matricula
+        ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
+    ) AS media_movel_30_dias
+
+FROM
+    dados_base
+ORDER BY
+    escola, dia_matricula;
